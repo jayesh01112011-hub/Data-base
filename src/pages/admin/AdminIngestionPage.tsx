@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import {
   PlayCircle,
   CheckCircle2,
-  AlertCircle,
   Clock,
   Layers,
   ArrowRight,
@@ -82,7 +81,7 @@ export const AdminIngestionPage: React.FC = () => {
       clearInterval(stepInterval);
       setActiveStep(6);
       setLastCompletedJob(res.job);
-      showToast(`Ingestion completed! ${res.job.records_processed} records verified and published.`, 'success');
+      showToast(`Ingestion completed: ${res.job.records_processed} records verified and published.`, 'success');
       fetchData();
     } catch (err: any) {
       clearInterval(stepInterval);
@@ -98,21 +97,21 @@ export const AdminIngestionPage: React.FC = () => {
     <div className="space-y-8 max-w-6xl">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#F4F5F2] font-display">
             Automated Ingestion Pipeline Engine
           </h1>
-          <p className="text-xs text-zinc-400 mt-1">
-            Real-time multi-stage ingestion orchestrator: extraction, validation, cleaning, deduplication, and publishing.
+          <p className="text-xs text-zinc-400 mt-1 font-sans">
+            Multi-stage extraction, validation, cleaning, deduplication, and atomic persistence.
           </p>
         </div>
 
         {/* Trigger Controls */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 font-sans">
           <select
             value={selectedDatasetId}
             onChange={(e) => setSelectedDatasetId(e.target.value)}
             disabled={running}
-            className="px-3 py-2 rounded-xl text-xs bg-zinc-900 border border-zinc-700 text-zinc-200 focus:outline-none focus:border-amber-500"
+            className="px-3 py-2 rounded-xl text-xs bg-[#0D0F12] border border-white/[0.1] text-zinc-200 focus:outline-none focus:border-[#5B82FF]"
           >
             {datasets.map((d) => (
               <option key={d.id} value={d.id}>{d.name}</option>
@@ -122,7 +121,7 @@ export const AdminIngestionPage: React.FC = () => {
           <button
             onClick={handleRunPipeline}
             disabled={running || !selectedDatasetId}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-amber-500 hover:bg-amber-400 text-zinc-950 shadow-sm transition-all disabled:opacity-50"
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[#5B82FF] hover:bg-[#6F92FF] text-white shadow-sm transition-all disabled:opacity-50"
           >
             {running ? <RefreshCw className="w-4 h-4 animate-spin" /> : <PlayCircle className="w-4 h-4" />}
             <span>{running ? 'Ingesting Stages...' : 'Run Ingestion Job'}</span>
@@ -131,12 +130,12 @@ export const AdminIngestionPage: React.FC = () => {
       </div>
 
       {/* Visual Pipeline Stage Diagram */}
-      <div className="p-6 rounded-2xl border border-zinc-800 bg-zinc-900 shadow-sm space-y-6">
+      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#0D0F12] shadow-sm space-y-6">
         <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-white uppercase tracking-wider font-mono">
+          <h2 className="text-sm font-semibold text-[#F4F5F2] uppercase tracking-wider font-mono">
             Pipeline Topology (7 Ingestion Stages)
           </h2>
-          <span className="text-xs font-mono text-zinc-400">
+          <span className="text-xs font-mono text-zinc-500">
             {running ? 'Execution in progress' : 'Engine Idle / Waiting'}
           </span>
         </div>
@@ -153,28 +152,28 @@ export const AdminIngestionPage: React.FC = () => {
                 key={idx}
                 className={`p-3 rounded-xl border flex flex-col justify-between transition-all ${
                   isCurrent
-                    ? 'border-amber-500 bg-amber-500/10 ring-2 ring-amber-500/50'
+                    ? 'border-[#5B82FF] bg-[#5B82FF]/10 ring-1 ring-[#5B82FF]/50'
                     : isCompleted
-                    ? 'border-emerald-500/50 bg-emerald-500/10'
-                    : 'border-zinc-800 bg-zinc-950/60'
+                    ? 'border-[#5B82FF]/40 bg-[#5B82FF]/5'
+                    : 'border-white/[0.06] bg-[#070809]'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between text-zinc-400 mb-2">
                     <span className="text-[10px] font-mono font-bold text-zinc-400">{stage.name}</span>
-                    <Icon className={`w-3.5 h-3.5 ${isCurrent ? 'text-amber-400 animate-bounce' : isCompleted ? 'text-emerald-400' : 'text-zinc-600'}`} />
+                    <Icon className={`w-3.5 h-3.5 ${isCurrent ? 'text-[#5B82FF] animate-bounce' : isCompleted ? 'text-[#5B82FF]' : 'text-zinc-600'}`} />
                   </div>
                   <h4 className="text-xs font-semibold text-white truncate">{stage.label}</h4>
                   <p className="text-[10px] text-zinc-500 mt-0.5">{stage.desc}</p>
                 </div>
 
-                <div className="mt-3 pt-2 border-t border-zinc-800/80 text-[10px] font-mono">
+                <div className="mt-3 pt-2 border-t border-white/[0.06] text-[10px] font-mono">
                   {isCurrent ? (
-                    <span className="text-amber-400 flex items-center gap-1">
+                    <span className="text-[#5B82FF] flex items-center gap-1">
                       <RefreshCw className="w-2.5 h-2.5 animate-spin" /> Running
                     </span>
                   ) : isCompleted ? (
-                    <span className="text-emerald-400 flex items-center gap-1">
+                    <span className="text-[#5B82FF] flex items-center gap-1">
                       <CheckCircle2 className="w-2.5 h-2.5" /> OK
                     </span>
                   ) : (
@@ -188,36 +187,36 @@ export const AdminIngestionPage: React.FC = () => {
 
         {/* Real-time Stage Breakdown Metrics for last completed job */}
         {lastCompletedJob && (
-          <div className="p-4 rounded-xl border border-zinc-800 bg-zinc-950/80 space-y-3">
+          <div className="p-4 rounded-xl border border-white/[0.08] bg-[#070809] space-y-3">
             <div className="flex items-center justify-between text-xs font-mono">
               <span className="text-zinc-400">JOB EXECUTION TELEMETRY:</span>
-              <span className="text-emerald-400 font-bold">Total Duration: {lastCompletedJob.duration_ms}ms</span>
+              <span className="text-[#5B82FF] font-bold">Total Duration: {lastCompletedJob.duration_ms}ms</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs font-mono">
-              <div className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800">
+              <div className="p-2.5 rounded-lg bg-[#0D0F12] border border-white/[0.08]">
                 <span className="text-[10px] text-zinc-500 uppercase block">Records Ingested</span>
                 <span className="text-sm font-bold text-white">{(lastCompletedJob.stage_metrics?.ingested || lastCompletedJob.records_processed).toLocaleString()}</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800">
+              <div className="p-2.5 rounded-lg bg-[#0D0F12] border border-white/[0.08]">
                 <span className="text-[10px] text-zinc-500 uppercase block">Schema Validated</span>
-                <span className="text-sm font-bold text-emerald-400">{(lastCompletedJob.stage_metrics?.validated || lastCompletedJob.records_processed).toLocaleString()}</span>
+                <span className="text-sm font-bold text-[#5B82FF]">{(lastCompletedJob.stage_metrics?.validated || lastCompletedJob.records_processed).toLocaleString()}</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800">
+              <div className="p-2.5 rounded-lg bg-[#0D0F12] border border-white/[0.08]">
                 <span className="text-[10px] text-zinc-500 uppercase block">Duplicates Dropped</span>
-                <span className="text-sm font-bold text-amber-400">{lastCompletedJob.stage_metrics?.deduplicated || 0}</span>
+                <span className="text-sm font-bold text-zinc-300">{lastCompletedJob.stage_metrics?.deduplicated || 0}</span>
               </div>
-              <div className="p-2.5 rounded-lg bg-zinc-900 border border-zinc-800">
+              <div className="p-2.5 rounded-lg bg-[#0D0F12] border border-white/[0.08]">
                 <span className="text-[10px] text-zinc-500 uppercase block">Database Stored</span>
-                <span className="text-sm font-bold text-sky-400">{(lastCompletedJob.stage_metrics?.stored || lastCompletedJob.records_processed).toLocaleString()}</span>
+                <span className="text-sm font-bold text-[#5B82FF]">{(lastCompletedJob.stage_metrics?.stored || lastCompletedJob.records_processed).toLocaleString()}</span>
               </div>
             </div>
 
             {lastCompletedJob.logs && (
-              <div className="p-3 rounded-lg bg-zinc-900 border border-zinc-800 text-[11px] font-mono text-zinc-300 overflow-x-auto space-y-1 max-h-32">
+              <div className="p-3 rounded-lg bg-[#0D0F12] border border-white/[0.08] text-[11px] font-mono text-zinc-300 overflow-x-auto space-y-1 max-h-32">
                 <div className="text-zinc-500 text-[10px]">PIPELINE AUDIT LOG:</div>
                 {lastCompletedJob.logs.map((lg, i) => (
-                  <div key={i} className="text-emerald-400/90">{lg}</div>
+                  <div key={i} className="text-[#5B82FF]/90">{lg}</div>
                 ))}
               </div>
             )}
@@ -226,9 +225,9 @@ export const AdminIngestionPage: React.FC = () => {
       </div>
 
       {/* Historical Ingestion Jobs Table */}
-      <div className="rounded-xl border border-zinc-800 bg-zinc-900 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-zinc-800 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-white">Ingestion Job Audit History</h3>
+      <div className="rounded-xl border border-white/[0.08] bg-[#0D0F12] overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-white/[0.08] flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-[#F4F5F2] font-display">Ingestion Job Audit History</h3>
           <span className="text-xs font-mono text-zinc-500">{jobs.length} Completed Runs</span>
         </div>
 
@@ -239,7 +238,7 @@ export const AdminIngestionPage: React.FC = () => {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-950 border-b border-zinc-800 font-mono text-zinc-400">
+              <thead className="bg-[#070809] border-b border-white/[0.08] font-mono text-zinc-500">
                 <tr>
                   <th className="px-6 py-3">Job ID</th>
                   <th className="px-6 py-3">Dataset Name</th>
@@ -249,10 +248,10 @@ export const AdminIngestionPage: React.FC = () => {
                   <th className="px-6 py-3 text-right">Started At</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-800 text-zinc-300 font-mono text-[11px]">
+              <tbody className="divide-y divide-white/[0.04] text-zinc-300 font-mono text-[11px]">
                 {jobs.map((j) => (
-                  <tr key={j.id} className="hover:bg-zinc-800/40">
-                    <td className="px-6 py-3 font-bold text-white">
+                  <tr key={j.id} className="hover:bg-white/[0.02]">
+                    <td className="px-6 py-3 font-semibold text-white">
                       {j.id.slice(0, 8)}...
                     </td>
                     <td className="px-6 py-3 text-zinc-200">
@@ -261,15 +260,15 @@ export const AdminIngestionPage: React.FC = () => {
                     <td className="px-6 py-3">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
                         j.status === 'completed'
-                          ? 'bg-emerald-500/10 text-emerald-400'
+                          ? 'bg-[#5B82FF]/10 text-[#5B82FF] border border-[#5B82FF]/20'
                           : j.status === 'failed'
-                          ? 'bg-rose-500/10 text-rose-400'
-                          : 'bg-amber-500/10 text-amber-400'
+                          ? 'bg-rose-500/10 text-rose-400 border border-rose-500/20'
+                          : 'bg-white/[0.05] text-zinc-400'
                       }`}>
                         {j.status}
                       </span>
                     </td>
-                    <td className="px-6 py-3 font-bold text-white">
+                    <td className="px-6 py-3 font-semibold text-[#F4F5F2]">
                       {j.records_processed.toLocaleString()}
                     </td>
                     <td className="px-6 py-3 text-zinc-400">
@@ -288,3 +287,4 @@ export const AdminIngestionPage: React.FC = () => {
     </div>
   );
 };
+

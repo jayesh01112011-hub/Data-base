@@ -5,11 +5,9 @@ import {
   AlertCircle,
   FileText,
   Download,
-  Zap,
   ShieldCheck,
   RefreshCw,
-  Clock,
-  ArrowRight
+  Clock
 } from 'lucide-react';
 import { api } from '../../services/apiClient';
 import { Plan, Subscription, Invoice, UsageSummary } from '../../types';
@@ -66,7 +64,7 @@ export const BillingPage: React.FC = () => {
   };
 
   const handleCancel = async () => {
-    if (!confirm('Are you sure you want to cancel your active plan? Your rate limits and quotas will revert to the Free tier at period end.')) return;
+    if (!confirm('Are you sure you want to cancel your active plan? Rate limits and quotas will revert to Free tier at period end.')) return;
 
     try {
       await api.billing.cancelSubscription();
@@ -84,8 +82,8 @@ export const BillingPage: React.FC = () => {
   if (loading) {
     return (
       <div className="py-24 flex flex-col items-center justify-center gap-3 text-zinc-400">
-        <RefreshCw className="w-6 h-6 animate-spin text-emerald-500" />
-        <span className="text-xs">Loading billing details...</span>
+        <RefreshCw className="w-6 h-6 animate-spin text-[#5B82FF]" />
+        <span className="text-xs font-mono">Loading billing details...</span>
       </div>
     );
   }
@@ -98,39 +96,39 @@ export const BillingPage: React.FC = () => {
   return (
     <div className="space-y-8 max-w-5xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-white">
-          Billing & Subscription
+        <h1 className="text-2xl font-bold tracking-tight text-[#F4F5F2] font-display">
+          Subscription & Metering Quotas
         </h1>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-          Manage your workspace plan, view usage metering limits, and download payment receipts.
+        <p className="text-xs text-zinc-400 mt-1 font-sans">
+          Manage your LabWay capacity limits, switch infrastructure tiers, and access invoice records.
         </p>
       </div>
 
       {/* Active Subscription Overview Card */}
-      <div className="p-6 md:p-8 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 shadow-sm">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-zinc-200 dark:border-zinc-800">
+      <div className="p-6 md:p-8 rounded-2xl border border-white/[0.08] bg-[#0D0F12] shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-white/[0.08]">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="text-xs font-mono uppercase px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold border border-emerald-500/20">
-                ACTIVE PLAN
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-[#5B82FF]/15 text-[#5B82FF] font-semibold border border-[#5B82FF]/30">
+                ACTIVE TIER
               </span>
               <span className="text-xs text-zinc-500 font-mono">
                 Status: {subscription?.status || 'Active'}
               </span>
             </div>
-            <h2 className="text-3xl font-extrabold text-zinc-950 dark:text-white">
+            <h2 className="text-3xl font-bold text-[#F4F5F2] font-display">
               {currentPlan?.name} Tier
             </h2>
-            <p className="text-xs text-zinc-500 mt-1">{currentPlan?.description}</p>
+            <p className="text-xs text-zinc-400 mt-1 font-sans">{currentPlan?.description}</p>
           </div>
 
           <div className="text-left md:text-right">
-            <div className="text-3xl font-extrabold text-zinc-950 dark:text-white">
+            <div className="text-3xl font-bold text-[#F4F5F2] font-display">
               ₹{currentPlan?.price_inr.toLocaleString()}
-              <span className="text-xs text-zinc-500 font-normal"> / month</span>
+              <span className="text-xs text-zinc-500 font-normal font-sans"> / month</span>
             </div>
             <p className="text-xs font-mono text-zinc-500 mt-1">
-              Next billing: {subscription?.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : 'Continuous'}
+              Next renewal: {subscription?.current_period_end ? new Date(subscription.current_period_end).toLocaleDateString() : 'Continuous'}
             </p>
           </div>
         </div>
@@ -138,31 +136,29 @@ export const BillingPage: React.FC = () => {
         {/* Quota Progress Gauge */}
         <div className="pt-6 space-y-2">
           <div className="flex items-center justify-between text-xs">
-            <span className="font-semibold text-zinc-700 dark:text-zinc-300">
-              Monthly Request Quota Usage
+            <span className="font-mono text-zinc-300">
+              Monthly Request Quota
             </span>
-            <span className="font-mono text-zinc-500">
+            <span className="font-mono text-zinc-400">
               {summary?.monthRequests.toLocaleString()} / {summary?.monthlyQuota.toLocaleString()} requests ({quotaUsedPct}%)
             </span>
           </div>
-          <div className="w-full bg-zinc-100 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+          <div className="w-full bg-[#12151A] h-2 rounded-full overflow-hidden border border-white/[0.05]">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                quotaUsedPct > 85 ? 'bg-amber-500' : 'bg-emerald-500'
-              }`}
+              className="h-full rounded-full transition-all duration-500 bg-[#5B82FF]"
               style={{ width: `${quotaUsedPct}%` }}
             ></div>
           </div>
           <p className="text-[11px] text-zinc-500 font-mono">
-            Rate limit: {currentPlan?.rate_limit_rps} requests/second burst allowance.
+            Throughput ceiling: {currentPlan?.rate_limit_rps} requests/second burst allowance.
           </p>
         </div>
 
         {subscription?.plan_id !== 'free' && (
-          <div className="pt-6 mt-6 border-t border-zinc-100 dark:border-zinc-800 flex justify-end">
+          <div className="pt-6 mt-6 border-t border-white/[0.06] flex justify-end">
             <button
               onClick={handleCancel}
-              className="text-xs font-semibold text-rose-500 hover:text-rose-600 transition-colors"
+              className="text-xs font-medium text-rose-400 hover:underline transition-colors"
             >
               Cancel Subscription
             </button>
@@ -173,8 +169,8 @@ export const BillingPage: React.FC = () => {
       {/* Plan Upgrade / Downgrade Cards */}
       <div className="space-y-4">
         <div>
-          <h2 className="text-base font-bold text-zinc-950 dark:text-white">Available Plans</h2>
-          <p className="text-xs text-zinc-500">Upgrade or switch tiers anytime with immediate quota adjustment.</p>
+          <h2 className="text-base font-semibold text-[#F4F5F2] font-display">Available Tiers</h2>
+          <p className="text-xs text-zinc-400">Scale burst allowances with immediate quota synchronization.</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -185,29 +181,29 @@ export const BillingPage: React.FC = () => {
                 key={p.id}
                 className={`p-5 rounded-xl border flex flex-col justify-between transition-all ${
                   isCurrent
-                    ? 'border-emerald-500 bg-emerald-500/5 dark:bg-emerald-500/10 shadow-xs'
-                    : 'border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/60'
+                    ? 'border-[#5B82FF] bg-[#5B82FF]/5 shadow-sm'
+                    : 'border-white/[0.08] bg-[#0D0F12]'
                 }`}
               >
                 <div>
                   <div className="flex items-center justify-between mb-2">
-                    <h3 className="text-sm font-bold uppercase tracking-wider text-zinc-900 dark:text-zinc-100">{p.name}</h3>
+                    <h3 className="text-sm font-semibold uppercase tracking-wider text-[#F4F5F2] font-display">{p.name}</h3>
                     {isCurrent && (
-                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-emerald-500/20 text-emerald-400 font-bold">
+                      <span className="px-1.5 py-0.5 rounded text-[10px] font-mono bg-[#5B82FF]/20 text-[#5B82FF] font-semibold">
                         CURRENT
                       </span>
                     )}
                   </div>
-                  <div className="text-2xl font-extrabold text-zinc-950 dark:text-white mb-2">
+                  <div className="text-2xl font-bold text-[#F4F5F2] mb-2 font-display">
                     ₹{p.price_inr.toLocaleString()}
-                    <span className="text-xs text-zinc-500 font-normal">/mo</span>
+                    <span className="text-xs text-zinc-500 font-normal font-sans">/mo</span>
                   </div>
-                  <p className="text-[11px] text-zinc-500 mb-4">{p.description}</p>
-                  <ul className="space-y-2 text-xs text-zinc-600 dark:text-zinc-400 mb-6">
+                  <p className="text-[11px] text-zinc-400 mb-4 font-sans">{p.description}</p>
+                  <ul className="space-y-2 text-xs text-zinc-400 mb-6 font-sans">
                     {p.features.slice(0, 4).map((f, i) => (
                       <li key={i} className="flex items-start gap-1.5">
-                        <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500 shrink-0 mt-0.5" />
-                        <span className="text-[11px]">{f}</span>
+                        <CheckCircle2 className="w-3.5 h-3.5 text-[#5B82FF] shrink-0 mt-0.5" />
+                        <span className="text-[11px] text-zinc-300">{f}</span>
                       </li>
                     ))}
                   </ul>
@@ -216,10 +212,10 @@ export const BillingPage: React.FC = () => {
                 <button
                   onClick={() => handlePlanChange(p.id)}
                   disabled={isCurrent || changingPlan === p.id}
-                  className={`w-full py-2 rounded-lg text-xs font-semibold transition-all ${
+                  className={`w-full py-2 rounded-lg text-xs font-medium transition-all ${
                     isCurrent
-                      ? 'bg-zinc-100 dark:bg-zinc-800 text-zinc-400 cursor-default'
-                      : 'bg-emerald-600 hover:bg-emerald-500 text-white shadow-xs'
+                      ? 'bg-white/[0.05] text-zinc-500 cursor-default border border-white/[0.08]'
+                      : 'bg-[#5B82FF] hover:bg-[#6F92FF] text-white shadow-xs'
                   }`}
                 >
                   {changingPlan === p.id ? 'Updating...' : isCurrent ? 'Active Plan' : `Switch to ${p.name}`}
@@ -231,20 +227,20 @@ export const BillingPage: React.FC = () => {
       </div>
 
       {/* Invoices Table */}
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 overflow-hidden">
-        <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-zinc-950 dark:text-white">Invoice History</h3>
+      <div className="rounded-xl border border-white/[0.08] bg-[#0D0F12] overflow-hidden">
+        <div className="p-4 border-b border-white/[0.08] flex items-center justify-between">
+          <h3 className="text-sm font-semibold text-[#F4F5F2] font-display">Invoice History</h3>
           <span className="text-xs font-mono text-zinc-500">{invoices.length} Invoices</span>
         </div>
 
         {invoices.length === 0 ? (
-          <div className="py-12 text-center text-zinc-500 text-xs">
+          <div className="py-12 text-center text-zinc-500 text-xs font-mono">
             No invoices on record for this workspace.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 font-mono text-zinc-500">
+              <thead className="bg-[#070809] border-b border-white/[0.08] font-mono text-zinc-500">
                 <tr>
                   <th className="px-6 py-3">Invoice Number</th>
                   <th className="px-6 py-3">Billing Cycle</th>
@@ -253,27 +249,27 @@ export const BillingPage: React.FC = () => {
                   <th className="px-6 py-3 text-right">Receipt</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 font-mono text-zinc-700 dark:text-zinc-300">
+              <tbody className="divide-y divide-white/[0.04] font-mono text-zinc-300">
                 {invoices.map((inv) => (
-                  <tr key={inv.id} className="hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
-                    <td className="px-6 py-3.5 font-bold text-zinc-900 dark:text-zinc-100">
+                  <tr key={inv.id} className="hover:bg-white/[0.02]">
+                    <td className="px-6 py-3.5 font-semibold text-[#F4F5F2]">
                       {inv.invoice_number}
                     </td>
-                    <td className="px-6 py-3.5 text-zinc-500">
+                    <td className="px-6 py-3.5 text-zinc-400">
                       {inv.billing_period}
                     </td>
-                    <td className="px-6 py-3.5 font-bold">
+                    <td className="px-6 py-3.5 font-bold text-white">
                       ₹{inv.amount_inr.toLocaleString()}
                     </td>
                     <td className="px-6 py-3.5">
-                      <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                      <span className="px-2 py-0.5 rounded text-[10px] font-bold bg-[#5B82FF]/10 text-[#5B82FF] border border-[#5B82FF]/20">
                         {inv.status.toUpperCase()}
                       </span>
                     </td>
                     <td className="px-6 py-3.5 text-right">
                       <button
                         onClick={() => handleDownloadInvoice(inv)}
-                        className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 hover:underline"
+                        className="inline-flex items-center gap-1 text-[#5B82FF] hover:underline"
                       >
                         <Download className="w-3.5 h-3.5" />
                         <span>Download</span>
@@ -289,3 +285,4 @@ export const BillingPage: React.FC = () => {
     </div>
   );
 };
+

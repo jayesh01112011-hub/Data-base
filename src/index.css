@@ -1,1 +1,70 @@
 @import "tailwindcss";
+
+@layer base {
+  :root {
+    --font-display: 'Space Grotesk', -apple-system, sans-serif;
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    --font-mono: 'JetBrains Mono', monospace;
+
+    /* LabWay Matte Palette */
+    --color-matte-950: #070809;
+    --color-matte-900: #0D0F12;
+    --color-matte-850: #12151A;
+    --color-matte-800: #181C22;
+    --color-matte-700: #222730;
+
+    --color-matte-white: #F4F5F2;
+    --color-matte-offwhite: #EEF0F2;
+
+    --color-matte-blue: #5B82FF;
+    --color-matte-blue-hover: #6F92FF;
+    --color-matte-blue-soft: rgba(91, 130, 255, 0.14);
+
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-faint: rgba(255, 255, 255, 0.05);
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: #070809;
+    color: #F4F5F2;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading, .font-display {
+    font-family: 'Space Grotesk', sans-serif;
+    letter-spacing: -0.02em;
+  }
+
+  code, pre, .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+/* Technical grid background pattern */
+.bg-tech-grid {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+}
+
+.bg-radial-illumination {
+  background: radial-gradient(circle 800px at 50% -100px, rgba(91, 130, 255, 0.12), transparent 70%);
+}
+
+/* Custom scrollbars for technical code panels */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0D0F12;
+}
+::-webkit-scrollbar-thumb {
+  background: #222730;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #5B82FF;
+}
+

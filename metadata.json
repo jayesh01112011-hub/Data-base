@@ -1,6 +1,6 @@
 {
-  "name": "DataFlow API",
-  "description": "Production-grade structured dataset ingestion, developer APIs, automatic metering, and subscription billing platform.",
+  "name": "LabWay",
+  "description": "Reliable data infrastructure. One clean API. Production-grade structured public datasets, automated ingestion, rate metering, and developer APIs.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

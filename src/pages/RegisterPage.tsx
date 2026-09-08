@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Database, ArrowRight, Lock, Mail, User, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { ArrowRight, Lock, Mail, User, AlertCircle } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { useToast } from '../context/ToastContext';
+import { LabWayLogo } from '../components/LabWayLogo';
 
 interface RegisterPageProps {
   navigate: (path: string) => void;
@@ -45,27 +46,22 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors">
+    <div className="min-h-screen bg-[#070809] text-[#F4F5F2] flex flex-col justify-center py-12 sm:px-6 lg:px-8 font-sans">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <div
           onClick={() => navigate('/')}
-          className="inline-flex items-center gap-2 cursor-pointer mb-4 group"
+          className="inline-flex items-center justify-center cursor-pointer mb-5 group"
         >
-          <div className="w-10 h-10 rounded-xl bg-zinc-900 dark:bg-zinc-100 flex items-center justify-center text-white dark:text-zinc-950 shadow-md">
-            <Database className="w-5 h-5 text-emerald-400 dark:text-emerald-600" />
-          </div>
-          <span className="text-xl font-bold tracking-tight text-zinc-900 dark:text-zinc-100">
-            DataFlow API
-          </span>
+          <LabWayLogo size="lg" />
         </div>
-        <h2 className="text-2xl font-extrabold text-zinc-900 dark:text-white tracking-tight">
+        <h2 className="text-2xl font-bold text-[#F4F5F2] tracking-tight font-display">
           Create developer account
         </h2>
-        <p className="mt-2 text-xs text-zinc-600 dark:text-zinc-400">
+        <p className="mt-2 text-xs text-zinc-400">
           Already have an account?{' '}
           <button
             onClick={() => navigate('/login')}
-            className="font-medium text-emerald-600 dark:text-emerald-400 hover:underline"
+            className="font-medium text-[#5B82FF] hover:underline"
           >
             Sign in
           </button>
@@ -73,9 +69,9 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white dark:bg-zinc-900 py-8 px-6 shadow-sm sm:rounded-xl border border-zinc-200 dark:border-zinc-800 sm:px-10">
+        <div className="bg-[#0D0F12] py-8 px-6 shadow-2xl sm:rounded-xl border border-white/[0.08] sm:px-10">
           {error && (
-            <div className="mb-5 p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs flex items-center gap-2">
+            <div className="mb-5 p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2">
               <AlertCircle className="w-4 h-4 shrink-0" />
               <span>{error}</span>
             </div>
@@ -83,11 +79,11 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+              <label className="block text-xs font-medium text-zinc-300 mb-1">
                 Full Name
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
                   <User className="w-4 h-4" />
                 </div>
                 <input
@@ -96,17 +92,17 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Alex Vance"
-                  className="block w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="block w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-white/[0.1] bg-[#12151A] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF] focus:ring-1 focus:ring-[#5B82FF]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+              <label className="block text-xs font-medium text-zinc-300 mb-1">
                 Email address
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
                   <Mail className="w-4 h-4" />
                 </div>
                 <input
@@ -115,17 +111,17 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="alex@company.com"
-                  className="block w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="block w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-white/[0.1] bg-[#12151A] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF] focus:ring-1 focus:ring-[#5B82FF]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+              <label className="block text-xs font-medium text-zinc-300 mb-1">
                 Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -134,17 +130,17 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Minimum 8 characters"
-                  className="block w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="block w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-white/[0.1] bg-[#12151A] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF] focus:ring-1 focus:ring-[#5B82FF]"
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-1">
+              <label className="block text-xs font-medium text-zinc-300 mb-1">
                 Confirm Password
               </label>
               <div className="relative">
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-400">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-zinc-500">
                   <Lock className="w-4 h-4" />
                 </div>
                 <input
@@ -153,17 +149,17 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="Re-enter password"
-                  className="block w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-white dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="block w-full pl-9 pr-3 py-2 text-xs rounded-lg border border-white/[0.1] bg-[#12151A] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF] focus:ring-1 focus:ring-[#5B82FF]"
                 />
               </div>
             </div>
 
             {/* Plan selector on onboarding */}
             <div>
-              <label className="block text-xs font-medium text-zinc-700 dark:text-zinc-300 mb-2">
+              <label className="block text-xs font-medium text-zinc-300 mb-2">
                 Select Initial Tier
               </label>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-3 gap-2 font-mono">
                 {[
                   { id: 'free', name: 'Free', price: '₹0' },
                   { id: 'developer', name: 'Developer', price: '₹499' },
@@ -175,8 +171,8 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
                     onClick={() => setSelectedPlan(tier.id as any)}
                     className={`p-2.5 rounded-lg border text-center transition-all ${
                       selectedPlan === tier.id
-                        ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-semibold'
-                        : 'border-zinc-200 dark:border-zinc-700 hover:border-zinc-300'
+                        ? 'border-[#5B82FF] bg-[#5B82FF]/10 text-[#5B82FF] font-semibold'
+                        : 'border-white/[0.08] bg-[#12151A] text-zinc-400 hover:border-white/[0.15]'
                     }`}
                   >
                     <div className="text-xs font-bold">{tier.name}</div>
@@ -190,7 +186,7 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex justify-center items-center gap-2 py-2.5 px-4 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-colors disabled:opacity-50"
+                className="w-full flex justify-center items-center gap-2 py-2.5 px-4 rounded-lg text-xs font-semibold bg-[#5B82FF] hover:bg-[#6F92FF] text-white shadow-sm transition-colors disabled:opacity-50"
               >
                 {loading ? 'Creating account...' : 'Create Account & Generate Key'}
                 <ArrowRight className="w-4 h-4" />
@@ -206,3 +202,4 @@ export const RegisterPage: React.FC<RegisterPageProps> = ({ navigate }) => {
     </div>
   );
 };
+

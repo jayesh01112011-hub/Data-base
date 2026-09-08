@@ -8,7 +8,8 @@ import {
   Laptop,
   CheckCircle2,
   AlertCircle,
-  ShieldCheck
+  ShieldCheck,
+  Download
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useTheme } from '../../context/ThemeContext';
@@ -22,7 +23,7 @@ export const SettingsPage: React.FC = () => {
 
   // Profile Form
   const [name, setName] = useState(user?.name || '');
-  const [company, setCompany] = useState('DataFlow Labs');
+  const [company, setCompany] = useState('LabWay Systems');
   const [profileSaved, setProfileSaved] = useState(false);
 
   // Password Form
@@ -40,7 +41,7 @@ export const SettingsPage: React.FC = () => {
   const handleSaveProfile = (e: React.FormEvent) => {
     e.preventDefault();
     setProfileSaved(true);
-    showToast('Profile updated successfully', 'success');
+    showToast('Workspace profile saved successfully', 'success');
     setTimeout(() => setProfileSaved(false), 2500);
   };
 
@@ -60,7 +61,7 @@ export const SettingsPage: React.FC = () => {
     setPasswordLoading(true);
     try {
       await api.auth.changePassword(currentPassword, newPassword);
-      showToast('Password updated successfully', 'success');
+      showToast('Master password updated successfully', 'success');
       setCurrentPassword('');
       setNewPassword('');
       setConfirmPassword('');
@@ -74,57 +75,57 @@ export const SettingsPage: React.FC = () => {
   return (
     <div className="space-y-8 max-w-4xl">
       <div>
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-white">
+        <h1 className="text-2xl font-bold tracking-tight text-[#F4F5F2] font-display">
           Workspace Settings
         </h1>
-        <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-          Manage your personal details, credentials, alert thresholds, and interface preferences.
+        <p className="text-xs text-zinc-400 mt-1 font-sans">
+          Manage developer credentials, alert triggers, interface configuration, and infrastructure backups.
         </p>
       </div>
 
       {/* 1. Profile Info */}
-      <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 space-y-4">
+      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#0D0F12] space-y-4">
         <div className="flex items-center gap-2">
-          <User className="w-4 h-4 text-emerald-500" />
-          <h2 className="text-sm font-bold text-zinc-950 dark:text-white">Profile Details</h2>
+          <User className="w-4 h-4 text-[#5B82FF]" />
+          <h2 className="text-sm font-semibold text-[#F4F5F2] font-display">Profile Details</h2>
         </div>
 
-        <form onSubmit={handleSaveProfile} className="space-y-4 text-xs">
+        <form onSubmit={handleSaveProfile} className="space-y-4 text-xs font-sans">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Full Name</label>
+              <label className="block font-medium text-zinc-300 mb-1">Full Name</label>
               <input
                 type="text"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
-                className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 rounded-lg border border-white/[0.1] bg-[#070809] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Email Address</label>
+              <label className="block font-medium text-zinc-300 mb-1">Email Address</label>
               <input
                 type="email"
                 disabled
                 value={user?.email || ''}
-                className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-100 dark:bg-zinc-900 text-zinc-500 cursor-not-allowed font-mono"
+                className="w-full px-3 py-2 rounded-lg border border-white/[0.05] bg-[#12151A] text-zinc-500 cursor-not-allowed font-mono"
               />
             </div>
           </div>
 
           <div>
-            <label className="block font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Company / Team</label>
+            <label className="block font-medium text-zinc-300 mb-1">Organization / Team</label>
             <input
               type="text"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
-              className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 rounded-lg border border-white/[0.1] bg-[#070809] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF]"
             />
           </div>
 
           <div className="flex justify-end pt-2">
             <button
               type="submit"
-              className="px-4 py-2 rounded-lg font-semibold bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
+              className="px-4 py-2 rounded-lg font-medium bg-[#5B82FF] hover:bg-[#6F92FF] text-white transition-colors"
             >
               Save Profile Changes
             </button>
@@ -133,53 +134,53 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* 2. Security / Change Password */}
-      <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 space-y-4">
+      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#0D0F12] space-y-4">
         <div className="flex items-center gap-2">
-          <Lock className="w-4 h-4 text-emerald-500" />
-          <h2 className="text-sm font-bold text-zinc-950 dark:text-white">Security & Password</h2>
+          <Lock className="w-4 h-4 text-[#5B82FF]" />
+          <h2 className="text-sm font-semibold text-[#F4F5F2] font-display">Security & Password</h2>
         </div>
 
         {passwordError && (
-          <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-500 text-xs flex items-center gap-2">
+          <div className="p-3 rounded-lg bg-rose-500/10 border border-rose-500/20 text-rose-400 text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{passwordError}</span>
           </div>
         )}
 
-        <form onSubmit={handleChangePassword} className="space-y-4 text-xs">
+        <form onSubmit={handleChangePassword} className="space-y-4 text-xs font-sans">
           <div>
-            <label className="block font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Current Password</label>
+            <label className="block font-medium text-zinc-300 mb-1">Current Password</label>
             <input
               type="password"
               required
               value={currentPassword}
               onChange={(e) => setCurrentPassword(e.target.value)}
               placeholder="••••••••"
-              className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+              className="w-full px-3 py-2 rounded-lg border border-white/[0.1] bg-[#070809] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF]"
             />
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block font-semibold text-zinc-700 dark:text-zinc-300 mb-1">New Password</label>
+              <label className="block font-medium text-zinc-300 mb-1">New Password</label>
               <input
                 type="password"
                 required
                 value={newPassword}
                 onChange={(e) => setNewPassword(e.target.value)}
                 placeholder="Min 8 characters"
-                className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 rounded-lg border border-white/[0.1] bg-[#070809] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF]"
               />
             </div>
             <div>
-              <label className="block font-semibold text-zinc-700 dark:text-zinc-300 mb-1">Confirm New Password</label>
+              <label className="block font-medium text-zinc-300 mb-1">Confirm New Password</label>
               <input
                 type="password"
                 required
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 placeholder="Re-enter new password"
-                className="w-full px-3 py-2 rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                className="w-full px-3 py-2 rounded-lg border border-white/[0.1] bg-[#070809] text-[#F4F5F2] focus:outline-none focus:border-[#5B82FF]"
               />
             </div>
           </div>
@@ -188,7 +189,7 @@ export const SettingsPage: React.FC = () => {
             <button
               type="submit"
               disabled={passwordLoading}
-              className="px-4 py-2 rounded-lg font-semibold bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 hover:bg-zinc-800 transition-colors disabled:opacity-50"
+              className="px-4 py-2 rounded-lg font-medium bg-[#12151A] border border-white/[0.1] text-white hover:bg-white/[0.1] transition-colors disabled:opacity-50"
             >
               {passwordLoading ? 'Updating...' : 'Update Password'}
             </button>
@@ -197,57 +198,57 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* 3. Notification Thresholds */}
-      <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 space-y-4">
+      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#0D0F12] space-y-4">
         <div className="flex items-center gap-2">
-          <Bell className="w-4 h-4 text-emerald-500" />
-          <h2 className="text-sm font-bold text-zinc-950 dark:text-white">Alert Preferences</h2>
+          <Bell className="w-4 h-4 text-[#5B82FF]" />
+          <h2 className="text-sm font-semibold text-[#F4F5F2] font-display">Alert Preferences</h2>
         </div>
 
         <div className="space-y-3 text-xs">
-          <label className="flex items-center justify-between p-3 rounded-xl border border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+          <label className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-[#070809] cursor-pointer hover:border-white/[0.15]">
             <div>
-              <span className="font-semibold block text-zinc-900 dark:text-zinc-100">80% Quota Threshold Warning</span>
-              <span className="text-zinc-500">Receive an email notification when workspace consumption reaches 80%.</span>
+              <span className="font-medium block text-zinc-200">80% Quota Threshold Warning</span>
+              <span className="text-zinc-500">Receive webhook notification when workspace consumption reaches 80%.</span>
             </div>
             <input
               type="checkbox"
               checked={alert80}
               onChange={(e) => setAlert80(e.target.checked)}
-              className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-[#5B82FF] rounded bg-[#12151A] border-white/[0.2] focus:ring-[#5B82FF]"
             />
           </label>
 
-          <label className="flex items-center justify-between p-3 rounded-xl border border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+          <label className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-[#070809] cursor-pointer hover:border-white/[0.15]">
             <div>
-              <span className="font-semibold block text-zinc-900 dark:text-zinc-100">100% Limit Exhaustion Alert</span>
-              <span className="text-zinc-500">Immediate alert when requests begin returning 429 quota errors.</span>
+              <span className="font-medium block text-zinc-200">100% Rate Limit Exhaustion Alert</span>
+              <span className="text-zinc-500">Real-time alert when ingress encounters 429 quota exhaustion.</span>
             </div>
             <input
               type="checkbox"
               checked={alert100}
               onChange={(e) => setAlert100(e.target.checked)}
-              className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-[#5B82FF] rounded bg-[#12151A] border-white/[0.2] focus:ring-[#5B82FF]"
             />
           </label>
 
-          <label className="flex items-center justify-between p-3 rounded-xl border border-zinc-100 dark:border-zinc-800 cursor-pointer hover:bg-zinc-50 dark:hover:bg-zinc-800/30">
+          <label className="flex items-center justify-between p-3 rounded-xl border border-white/[0.06] bg-[#070809] cursor-pointer hover:border-white/[0.15]">
             <div>
-              <span className="font-semibold block text-zinc-900 dark:text-zinc-100">Monthly Performance Digest</span>
-              <span className="text-zinc-500">Monthly breakdown of average latency, total requests, and error rate.</span>
+              <span className="font-medium block text-zinc-200">Monthly Performance Digest</span>
+              <span className="text-zinc-500">Aggregated breakdown of latency percentiles, total requests, and error rate.</span>
             </div>
             <input
               type="checkbox"
               checked={monthlySummary}
               onChange={(e) => setMonthlySummary(e.target.checked)}
-              className="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500"
+              className="w-4 h-4 text-[#5B82FF] rounded bg-[#12151A] border-white/[0.2] focus:ring-[#5B82FF]"
             />
           </label>
         </div>
       </div>
 
       {/* 4. Appearance / Theme */}
-      <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 space-y-4">
-        <h2 className="text-sm font-bold text-zinc-950 dark:text-white">Interface Appearance</h2>
+      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#0D0F12] space-y-4">
+        <h2 className="text-sm font-semibold text-[#F4F5F2] font-display">Interface Appearance</h2>
         <div className="grid grid-cols-3 gap-3">
           {[
             { id: 'light', label: 'Light', icon: Sun },
@@ -261,10 +262,10 @@ export const SettingsPage: React.FC = () => {
                 key={t.id}
                 type="button"
                 onClick={() => setTheme(t.id as any)}
-                className={`p-4 rounded-xl border flex flex-col items-center gap-2 text-xs font-semibold transition-all ${
+                className={`p-4 rounded-xl border flex flex-col items-center gap-2 text-xs font-medium transition-all ${
                   active
-                    ? 'border-emerald-500 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 shadow-xs'
-                    : 'border-zinc-200 dark:border-zinc-800 text-zinc-600 dark:text-zinc-400 hover:border-zinc-300'
+                    ? 'border-[#5B82FF] bg-[#5B82FF]/10 text-[#5B82FF]'
+                    : 'border-white/[0.08] text-zinc-400 hover:border-white/[0.2]'
                 }`}
               >
                 <Icon className="w-5 h-5" />
@@ -276,29 +277,29 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* 5. Complete Project Export */}
-      <div className="p-6 rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 space-y-4">
+      <div className="p-6 rounded-2xl border border-white/[0.08] bg-[#0D0F12] space-y-4">
         <div>
-          <h2 className="text-sm font-bold text-zinc-950 dark:text-white">Complete Project Export</h2>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-0.5">
-            Download the entire project source code, database tables, and configurations as-is.
+          <h2 className="text-sm font-semibold text-[#F4F5F2] font-display">Complete Project Export</h2>
+          <p className="text-xs text-zinc-400 mt-0.5">
+            Download the complete LabWay project source code, database tables, and configurations as-is.
           </p>
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
           <a
             href="/dataflow-api-complete.zip"
-            download="dataflow-api-complete.zip"
-            className="p-4 rounded-xl border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 flex flex-col justify-between gap-2 transition-colors group"
+            download="labway-api-complete.zip"
+            className="p-4 rounded-xl border border-[#5B82FF]/30 bg-[#5B82FF]/5 hover:bg-[#5B82FF]/10 flex flex-col justify-between gap-2 transition-colors group"
           >
             <div>
-              <span className="text-xs font-bold text-emerald-600 dark:text-emerald-400 block">
+              <span className="text-xs font-semibold text-[#5B82FF] block">
                 Download Complete Project (.ZIP)
               </span>
-              <span className="text-[11px] text-zinc-500 leading-snug block mt-0.5">
+              <span className="text-[11px] text-zinc-400 leading-snug block mt-0.5 font-sans">
                 Every backend, frontend, database, Docker, and config file packaged for immediate local extraction.
               </span>
             </div>
-            <span className="text-xs font-mono font-medium text-emerald-600 dark:text-emerald-400 group-hover:underline">
+            <span className="text-xs font-mono font-medium text-[#5B82FF] group-hover:underline">
               Download ZIP (327 KB) →
             </span>
           </a>
@@ -306,17 +307,17 @@ export const SettingsPage: React.FC = () => {
           <a
             href="/COMPLETE_SOURCE_CODE.txt"
             download="COMPLETE_SOURCE_CODE.txt"
-            className="p-4 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-800/30 hover:bg-zinc-100 dark:hover:bg-zinc-800/60 flex flex-col justify-between gap-2 transition-colors group"
+            className="p-4 rounded-xl border border-white/[0.08] bg-[#070809] hover:bg-white/[0.03] flex flex-col justify-between gap-2 transition-colors group"
           >
             <div>
-              <span className="text-xs font-bold text-zinc-900 dark:text-zinc-100 block">
+              <span className="text-xs font-semibold text-zinc-200 block">
                 Download Raw Source Code (.TXT)
               </span>
-              <span className="text-[11px] text-zinc-500 leading-snug block mt-0.5">
+              <span className="text-[11px] text-zinc-400 leading-snug block mt-0.5 font-sans">
                 Single text file formatted with standard file markers for simple script unpacking.
               </span>
             </div>
-            <span className="text-xs font-mono font-medium text-zinc-600 dark:text-zinc-400 group-hover:underline">
+            <span className="text-xs font-mono font-medium text-zinc-400 group-hover:underline">
               Download TXT (378 KB) →
             </span>
           </a>
@@ -325,3 +326,4 @@ export const SettingsPage: React.FC = () => {
     </div>
   );
 };
+

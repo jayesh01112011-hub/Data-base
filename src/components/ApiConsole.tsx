@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Play, Copy, Check, Terminal, RefreshCw, Layers } from 'lucide-react';
+import { Play, Copy, Check, Terminal, RefreshCw } from 'lucide-react';
 import { useToast } from '../context/ToastContext';
 
 interface ApiConsoleProps {
@@ -58,8 +58,8 @@ export const ApiConsole: React.FC<ApiConsoleProps> = ({
     executeQuery();
   }, [selectedCategory, selectedLocation, selectedStatus, limit]);
 
-  const curlCommand = `curl -X GET "https://api.dataflow.dev${initialEndpoint}?category=${selectedCategory}&limit=${limit}" \\
-  -H "Authorization: Bearer df_live_your_api_key"`;
+  const curlCommand = `curl -X GET "https://api.labway.dev${initialEndpoint}?category=${selectedCategory}&limit=${limit}" \\
+  -H "Authorization: Bearer df_live_xxxxxxxxxxxxxxxxx"`;
 
   const copyCommand = () => {
     navigator.clipboard.writeText(curlCommand);
@@ -69,42 +69,44 @@ export const ApiConsole: React.FC<ApiConsoleProps> = ({
   };
 
   return (
-    <div className="w-full rounded-xl border border-zinc-200 dark:border-zinc-800 bg-zinc-900 text-zinc-100 shadow-2xl overflow-hidden font-mono text-xs">
+    <div className="w-full rounded-xl border border-white/[0.08] bg-[#0D0F12] text-[#F4F5F2] shadow-2xl overflow-hidden font-mono text-xs">
       {/* Console Header Bar */}
-      <div className="px-4 py-3 bg-zinc-950/80 border-b border-zinc-800 flex flex-wrap items-center justify-between gap-3">
+      <div className="px-4 py-3 bg-[#070809] border-b border-white/[0.08] flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <div className="flex gap-1.5">
-            <span className="w-3 h-3 rounded-full bg-rose-500/80 inline-block"></span>
-            <span className="w-3 h-3 rounded-full bg-amber-500/80 inline-block"></span>
-            <span className="w-3 h-3 rounded-full bg-emerald-500/80 inline-block"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-zinc-700 inline-block"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-zinc-700 inline-block"></span>
+            <span className="w-2.5 h-2.5 rounded-full bg-[#5B82FF] inline-block"></span>
           </div>
-          <span className="text-zinc-400 font-medium ml-2 text-xs flex items-center gap-1">
-            <Terminal className="w-3.5 h-3.5 text-zinc-500" />
-            Live Query Console
+          <span className="text-zinc-400 font-medium ml-2 text-xs flex items-center gap-1.5">
+            <Terminal className="w-3.5 h-3.5 text-[#5B82FF]" />
+            LabWay Interactive Gateway Tester
           </span>
         </div>
 
         {/* Live response badge */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2.5">
           <span className={`px-2 py-0.5 rounded text-[11px] font-semibold ${
-            responseStatus === 200 ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/30' : 'bg-rose-500/10 text-rose-400 border border-rose-500/30'
+            responseStatus === 200
+              ? 'bg-[#5B82FF]/15 text-[#5B82FF] border border-[#5B82FF]/30'
+              : 'bg-zinc-800 text-zinc-300 border border-zinc-700'
           }`}>
             {responseStatus} OK
           </span>
           <span className="text-zinc-500 text-[11px]">{responseTime}ms</span>
           <button
             onClick={copyCommand}
-            className="p-1 rounded text-zinc-400 hover:text-white hover:bg-zinc-800 transition-colors"
-            title="Copy cURL"
+            className="p-1 rounded text-zinc-400 hover:text-white hover:bg-white/[0.08] transition-colors"
+            title="Copy cURL snippet"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+            {copied ? <Check className="w-3.5 h-3.5 text-[#5B82FF]" /> : <Copy className="w-3.5 h-3.5" />}
           </button>
         </div>
       </div>
 
       {/* Query Builder Controls */}
-      <div className="p-3 bg-zinc-900/90 border-b border-zinc-800 flex flex-wrap items-center gap-2">
-        <span className="px-2 py-1 rounded bg-emerald-500/20 text-emerald-300 font-semibold text-[11px] border border-emerald-500/30">
+      <div className="p-3 bg-[#12151A] border-b border-white/[0.08] flex flex-wrap items-center gap-2.5">
+        <span className="px-2 py-0.5 rounded bg-[#5B82FF]/20 text-[#5B82FF] font-semibold text-[11px] border border-[#5B82FF]/40">
           GET
         </span>
         <span className="text-zinc-300 font-mono text-xs">/api/v1/opportunities?</span>
@@ -114,7 +116,7 @@ export const ApiConsole: React.FC<ApiConsoleProps> = ({
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-zinc-200 text-xs focus:outline-none focus:border-emerald-500"
+            className="bg-[#0D0F12] border border-white/[0.1] rounded px-2 py-1 text-zinc-200 text-xs focus:outline-none focus:border-[#5B82FF]"
           >
             <option value="manufacturing">manufacturing</option>
             <option value="clean-energy">clean-energy</option>
@@ -130,7 +132,7 @@ export const ApiConsole: React.FC<ApiConsoleProps> = ({
           <select
             value={selectedLocation}
             onChange={(e) => setSelectedLocation(e.target.value)}
-            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-zinc-200 text-xs focus:outline-none focus:border-emerald-500"
+            className="bg-[#0D0F12] border border-white/[0.1] rounded px-2 py-1 text-zinc-200 text-xs focus:outline-none focus:border-[#5B82FF]"
           >
             <option value="all">all</option>
             <option value="US-CA">US-CA</option>
@@ -146,7 +148,7 @@ export const ApiConsole: React.FC<ApiConsoleProps> = ({
           <select
             value={limit}
             onChange={(e) => setLimit(Number(e.target.value))}
-            className="bg-zinc-800 border border-zinc-700 rounded px-2 py-1 text-zinc-200 text-xs focus:outline-none focus:border-emerald-500"
+            className="bg-[#0D0F12] border border-white/[0.1] rounded px-2 py-1 text-zinc-200 text-xs focus:outline-none focus:border-[#5B82FF]"
           >
             <option value={2}>2</option>
             <option value={3}>3</option>
@@ -157,19 +159,19 @@ export const ApiConsole: React.FC<ApiConsoleProps> = ({
         <button
           onClick={executeQuery}
           disabled={loading}
-          className="ml-auto inline-flex items-center gap-1.5 px-3 py-1 rounded bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs transition-colors shadow-sm disabled:opacity-50"
+          className="ml-auto inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-[#5B82FF] hover:bg-[#6F92FF] text-white font-medium text-xs transition-colors shadow-sm disabled:opacity-50"
         >
           {loading ? <RefreshCw className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5 fill-current" />}
-          Send
+          Execute
         </button>
       </div>
 
       {/* Real Response Output */}
-      <div className="p-4 max-h-72 overflow-y-auto bg-zinc-950 font-mono text-[12px] leading-relaxed text-zinc-300 scrollbar-thin scrollbar-thumb-zinc-800">
+      <div className="p-4 max-h-72 overflow-y-auto bg-[#070809] font-mono text-[12px] leading-relaxed text-zinc-300">
         {loading ? (
           <div className="py-8 flex items-center justify-center gap-2 text-zinc-500">
-            <RefreshCw className="w-4 h-4 animate-spin text-emerald-400" />
-            <span>Fetching live records from SQLite repository...</span>
+            <RefreshCw className="w-4 h-4 animate-spin text-[#5B82FF]" />
+            <span>Querying verified dataset repository...</span>
           </div>
         ) : (
           <pre className="whitespace-pre-wrap">
@@ -180,3 +182,4 @@ export const ApiConsole: React.FC<ApiConsoleProps> = ({
     </div>
   );
 };
+

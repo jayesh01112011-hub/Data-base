@@ -9,8 +9,10 @@ import {
   XCircle,
   RefreshCw,
   ShieldCheck,
-  Clock,
-  CheckCircle2
+  CheckCircle2,
+  Terminal,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 import { api } from '../../services/apiClient';
 import { APIKey } from '../../types';
@@ -30,6 +32,7 @@ export const ApiKeysPage: React.FC = () => {
   // Created Secret Key Modal
   const [newSecretKey, setNewSecretKey] = useState<string | null>(null);
   const [copiedKey, setCopiedKey] = useState(false);
+  const [revealedKeys, setRevealedKeys] = useState<Record<string, boolean>>({});
 
   const fetchKeys = async () => {
     setLoading(true);
@@ -96,21 +99,31 @@ export const ApiKeysPage: React.FC = () => {
     setTimeout(() => setCopiedKey(false), 2000);
   };
 
+  const copyRowCurl = (prefix: string) => {
+    const cmd = `curl -X GET "https://api.labway.dev/api/v1/opportunities" \\\n  -H "Authorization: Bearer ${prefix}••••••••••••••••"`;
+    navigator.clipboard.writeText(cmd);
+    showToast('cURL template copied to clipboard');
+  };
+
+  const toggleReveal = (id: string) => {
+    setRevealedKeys(prev => ({ ...prev, [id]: !prev[id] }));
+  };
+
   return (
     <div className="space-y-8 max-w-5xl">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-950 dark:text-white">
+          <h1 className="text-2xl font-bold tracking-tight text-[#F4F5F2] font-display">
             API Key Credentials
           </h1>
-          <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-            Generate and manage secret tokens to authenticate automated requests to the DataFlow gateway.
+          <p className="text-xs text-zinc-400 mt-1 font-sans">
+            Provision and audit bearer tokens used by your pipelines to query the LabWay ingestion gateway.
           </p>
         </div>
 
         <button
           onClick={() => setModalOpen(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm transition-colors self-start"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-medium bg-[#5B82FF] hover:bg-[#6F92FF] text-white shadow-sm transition-all self-start"
         >
           <Plus className="w-4 h-4" />
           Create New Secret Key
@@ -118,88 +131,116 @@ export const ApiKeysPage: React.FC = () => {
       </div>
 
       {/* Security Banner */}
-      <div className="p-4 rounded-xl border border-amber-500/30 bg-amber-500/10 flex items-start gap-3 text-xs text-zinc-800 dark:text-zinc-200">
-        <AlertTriangle className="w-4 h-4 text-amber-500 shrink-0 mt-0.5" />
-        <div>
-          <span className="font-semibold text-amber-500">Security Recommendation: </span>
-          Do not embed your secret API keys in client-side code, mobile binaries, or public GitHub repositories. Use separate keys for staging and production environments, and rotate them regularly.
+      <div className="p-4 rounded-xl border border-white/[0.08] bg-[#0D0F12] flex items-start gap-3 text-xs text-zinc-300">
+        <AlertTriangle className="w-4 h-4 text-[#5B82FF] shrink-0 mt-0.5" />
+        <div className="leading-relaxed">
+          <span className="font-semibold text-[#F4F5F2]">Security Standards: </span>
+          Keep secret keys in environment variables (`process.env.LABWAY_API_KEY`). Never expose bearer tokens in client-side bundles or public repositories.
         </div>
       </div>
 
       {/* Keys Table */}
-      <div className="rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/40 overflow-hidden shadow-sm">
-        <div className="p-4 border-b border-zinc-200 dark:border-zinc-800 flex items-center justify-between">
-          <h3 className="text-sm font-bold text-zinc-900 dark:text-zinc-100">Provisioned Keys</h3>
+      <div className="rounded-xl border border-white/[0.08] bg-[#0D0F12] overflow-hidden shadow-sm">
+        <div className="p-4 border-b border-white/[0.08] flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Key className="w-4 h-4 text-[#5B82FF]" />
+            <h3 className="text-sm font-semibold text-[#F4F5F2] font-display">Provisioned Keys</h3>
+          </div>
           <span className="text-xs font-mono text-zinc-500">{keys.length} Keys Configured</span>
         </div>
 
         {loading ? (
           <div className="py-16 flex items-center justify-center gap-2 text-zinc-400">
-            <RefreshCw className="w-5 h-5 animate-spin text-emerald-500" />
-            <span className="text-xs">Loading keys...</span>
+            <RefreshCw className="w-5 h-5 animate-spin text-[#5B82FF]" />
+            <span className="text-xs font-mono">Loading keys...</span>
           </div>
         ) : keys.length === 0 ? (
-          <div className="py-16 text-center text-zinc-500 text-xs">
+          <div className="py-16 text-center text-zinc-500 text-xs font-mono">
             No API keys found. Create your first key to begin querying data.
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-zinc-50 dark:bg-zinc-950 border-b border-zinc-200 dark:border-zinc-800 font-mono text-zinc-500">
+              <thead className="bg-[#070809] border-b border-white/[0.08] font-mono text-zinc-500">
                 <tr>
-                  <th className="px-6 py-3 font-semibold">Key Name</th>
-                  <th className="px-6 py-3 font-semibold">Prefix</th>
+                  <th className="px-6 py-3 font-semibold">Key Identifier</th>
+                  <th className="px-6 py-3 font-semibold">Token Prefix</th>
                   <th className="px-6 py-3 font-semibold">Status</th>
+                  <th className="px-6 py-3 font-semibold">Scopes</th>
                   <th className="px-6 py-3 font-semibold">Created</th>
-                  <th className="px-6 py-3 font-semibold">Last Used</th>
                   <th className="px-6 py-3 font-semibold">Expires</th>
                   <th className="px-6 py-3 font-semibold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-800 text-zinc-700 dark:text-zinc-300">
+              <tbody className="divide-y divide-white/[0.06] text-zinc-300 font-sans">
                 {keys.map((k) => (
-                  <tr key={k.id} className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30">
-                    <td className="px-6 py-3.5 font-semibold text-zinc-900 dark:text-zinc-100">
+                  <tr key={k.id} className="hover:bg-white/[0.02]">
+                    <td className="px-6 py-3.5 font-medium text-[#F4F5F2]">
                       {k.name}
                     </td>
-                    <td className="px-6 py-3.5 font-mono text-emerald-600 dark:text-emerald-400">
-                      {k.key_prefix}••••••••
+                    <td className="px-6 py-3.5 font-mono text-[#5B82FF]">
+                      <div className="flex items-center gap-2">
+                        <span>
+                          {revealedKeys[k.id] ? `${k.key_prefix}live_auth_token` : `${k.key_prefix}••••••••••••`}
+                        </span>
+                        <button
+                          onClick={() => toggleReveal(k.id)}
+                          className="text-zinc-500 hover:text-zinc-300 transition-colors"
+                          title={revealedKeys[k.id] ? 'Mask key' : 'Show prefix'}
+                        >
+                          {revealedKeys[k.id] ? <EyeOff className="w-3.5 h-3.5" /> : <Eye className="w-3.5 h-3.5" />}
+                        </button>
+                      </div>
                     </td>
                     <td className="px-6 py-3.5">
                       {k.is_active ? (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-[#5B82FF]/10 text-[#5B82FF] border border-[#5B82FF]/20">
                           <CheckCircle2 className="w-3 h-3" /> Active
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-rose-500/10 text-rose-500 border border-rose-500/20">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-mono font-medium bg-rose-500/10 text-rose-400 border border-rose-500/20">
                           <XCircle className="w-3 h-3" /> Revoked
                         </span>
                       )}
+                    </td>
+                    <td className="px-6 py-3.5">
+                      <div className="flex items-center gap-1 font-mono text-[10px]">
+                        <span className="px-1.5 py-0.5 rounded bg-white/[0.05] text-zinc-300 border border-white/[0.08]">
+                          read:datasets
+                        </span>
+                        <span className="px-1.5 py-0.5 rounded bg-white/[0.05] text-zinc-400 border border-white/[0.08]">
+                          100 r/m
+                        </span>
+                      </div>
                     </td>
                     <td className="px-6 py-3.5 font-mono text-zinc-500">
                       {new Date(k.created_at).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-3.5 font-mono text-zinc-500">
-                      {k.last_used_at ? new Date(k.last_used_at).toLocaleDateString() : 'Never'}
-                    </td>
-                    <td className="px-6 py-3.5 font-mono text-zinc-500">
                       {k.expires_at ? new Date(k.expires_at).toLocaleDateString() : 'Never'}
                     </td>
                     <td className="px-6 py-3.5 text-right space-x-2">
+                      <button
+                        onClick={() => copyRowCurl(k.key_prefix)}
+                        className="p-1 text-zinc-400 hover:text-[#5B82FF] transition-colors"
+                        title="Copy cURL snippet"
+                      >
+                        <Terminal className="w-3.5 h-3.5 inline" />
+                      </button>
                       {k.is_active ? (
                         <button
                           onClick={() => handleRevoke(k.id)}
-                          className="px-2.5 py-1 rounded text-[11px] font-semibold text-amber-500 hover:bg-amber-500/10 transition-colors"
+                          className="px-2.5 py-1 rounded text-[11px] font-medium text-amber-400 hover:bg-amber-400/10 transition-colors"
                         >
                           Revoke
                         </button>
                       ) : null}
                       <button
                         onClick={() => handleDelete(k.id)}
-                        className="p-1 text-zinc-400 hover:text-rose-500 transition-colors"
+                        className="p-1 text-zinc-500 hover:text-rose-400 transition-colors"
                         title="Delete key record"
                       >
-                        <Trash2 className="w-3.5 h-3.5" />
+                        <Trash2 className="w-3.5 h-3.5 inline" />
                       </button>
                     </td>
                   </tr>
@@ -212,18 +253,18 @@ export const ApiKeysPage: React.FC = () => {
 
       {/* Modal 1: Create Key */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/70 backdrop-blur-xs">
-          <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-xs">
+          <div className="bg-[#0D0F12] border border-white/[0.1] rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-zinc-950 dark:text-white">Create New API Key</h3>
-              <button onClick={() => setModalOpen(false)} className="text-zinc-400 hover:text-zinc-600">
+              <h3 className="text-base font-semibold text-[#F4F5F2] font-display">Create New API Key</h3>
+              <button onClick={() => setModalOpen(false)} className="text-zinc-400 hover:text-white">
                 ✕
               </button>
             </div>
 
             <form onSubmit={handleCreateKey} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                <label className="block text-xs font-mono text-zinc-400 mb-1">
                   Key Identifier / Purpose
                 </label>
                 <input
@@ -232,18 +273,18 @@ export const ApiKeysPage: React.FC = () => {
                   value={keyName}
                   onChange={(e) => setKeyName(e.target.value)}
                   placeholder="e.g. Production Ingestion Worker"
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-white/[0.1] bg-[#12151A] text-zinc-100 placeholder-zinc-500 focus:outline-none focus:border-[#5B82FF]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-zinc-700 dark:text-zinc-300 mb-1">
+                <label className="block text-xs font-mono text-zinc-400 mb-1">
                   Expiration
                 </label>
                 <select
                   value={expiresInDays || ''}
                   onChange={(e) => setExpiresInDays(e.target.value ? Number(e.target.value) : undefined)}
-                  className="w-full px-3 py-2 text-xs rounded-lg border border-zinc-300 dark:border-zinc-700 bg-zinc-50 dark:bg-zinc-800 text-zinc-900 dark:text-zinc-100 focus:outline-none focus:ring-2 focus:ring-emerald-500"
+                  className="w-full px-3 py-2 text-xs rounded-lg border border-white/[0.1] bg-[#12151A] text-zinc-100 focus:outline-none focus:border-[#5B82FF]"
                 >
                   <option value="">Never Expires</option>
                   <option value="30">30 Days</option>
@@ -256,14 +297,14 @@ export const ApiKeysPage: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-lg text-xs font-semibold text-zinc-600 dark:text-zinc-400 hover:bg-zinc-100 dark:hover:bg-zinc-800"
+                  className="px-4 py-2 rounded-lg text-xs font-medium text-zinc-400 hover:bg-white/[0.05]"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={creating}
-                  className="px-4 py-2 rounded-lg text-xs font-semibold bg-emerald-600 hover:bg-emerald-500 text-white shadow-sm disabled:opacity-50"
+                  className="px-4 py-2 rounded-lg text-xs font-medium bg-[#5B82FF] hover:bg-[#6F92FF] text-white shadow-sm disabled:opacity-50 transition-all"
                 >
                   {creating ? 'Generating...' : 'Generate Secret Key'}
                 </button>
@@ -275,24 +316,24 @@ export const ApiKeysPage: React.FC = () => {
 
       {/* Modal 2: One-Time Secret Key Warning */}
       {newSecretKey && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-zinc-950/80 backdrop-blur-xs">
-          <div className="bg-white dark:bg-zinc-900 border border-emerald-500/50 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-            <div className="flex items-center gap-2 text-emerald-500">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-xs">
+          <div className="bg-[#0D0F12] border border-[#5B82FF]/40 rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
+            <div className="flex items-center gap-2 text-[#5B82FF]">
               <ShieldCheck className="w-5 h-5" />
-              <h3 className="text-base font-bold text-zinc-950 dark:text-white">Copy Your Secret Key Now</h3>
+              <h3 className="text-base font-semibold text-[#F4F5F2] font-display">Store Secret Key Securely</h3>
             </div>
 
-            <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-600 dark:text-amber-400 text-xs">
-              <strong>CRITICAL:</strong> This secret key will <strong>NEVER</strong> be shown to you again. If you lose it, you will need to generate a new key.
+            <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs">
+              <strong>IMPORTANT:</strong> For security reasons, this secret key will <strong>NEVER</strong> be displayed again. Make sure to store it in your secrets manager.
             </div>
 
-            <div className="p-3 rounded-xl bg-zinc-950 border border-zinc-800 flex items-center justify-between gap-3">
-              <code className="font-mono text-xs text-emerald-400 select-all break-all">
+            <div className="p-3 rounded-xl bg-[#070809] border border-white/[0.1] flex items-center justify-between gap-3">
+              <code className="font-mono text-xs text-[#5B82FF] select-all break-all">
                 {newSecretKey}
               </code>
               <button
                 onClick={copySecret}
-                className="p-2 shrink-0 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white transition-colors"
+                className="p-2 shrink-0 rounded-lg bg-[#5B82FF] hover:bg-[#6F92FF] text-white transition-colors"
                 title="Copy to clipboard"
               >
                 {copiedKey ? <Check className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
@@ -302,9 +343,9 @@ export const ApiKeysPage: React.FC = () => {
             <div className="pt-2 flex justify-end">
               <button
                 onClick={() => setNewSecretKey(null)}
-                className="px-5 py-2 rounded-xl text-xs font-semibold bg-zinc-900 dark:bg-zinc-100 text-white dark:text-zinc-950 hover:bg-zinc-800"
+                className="px-5 py-2 rounded-xl text-xs font-medium bg-white/[0.1] hover:bg-white/[0.15] text-[#F4F5F2] transition-colors"
               >
-                I have saved my secret key
+                I have securely saved my key
               </button>
             </div>
           </div>
@@ -313,3 +354,4 @@ export const ApiKeysPage: React.FC = () => {
     </div>
   );
 };
+
