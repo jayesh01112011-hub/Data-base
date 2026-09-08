@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  dataflow-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: dataflow-api-service
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - PORT=3000
+      - DATABASE_URL=sqlite:///data/dataflow.db
+      - JWT_SECRET=production_super_secret_jwt_sign_key_change_me
+    volumes:
+      - dataflow-data:/app/data
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 3
+
+volumes:
+  dataflow-data:
+    driver: local

@@ -1,0 +1,6 @@
+{
+  "name": "DataFlow API",
+  "description": "Production-grade structured dataset ingestion, developer APIs, automatic metering, and subscription billing platform.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
